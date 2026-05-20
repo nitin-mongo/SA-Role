@@ -1,0 +1,288 @@
+[
+  {
+    "group": "Solutioning & technical advisory",
+    "metrics": [
+      {
+        "label": "PoVs/POC run / year",
+        "sublabel": "Complexity L/M/H · Win rate",
+        "sa": {
+          "pill": "4-6 PoVs / POCs ",
+          "note": "Able to work with customer to Define Success Metrics. Owns standard PoV/POC end-to-end without manager oversight."
+        },
+        "sr": {
+          "pill": "6–10 PoVs / Complex POCs ",
+          "note": "Able to Convince customer on Success Metrics. Leads competitive and GenAI/Vector Search etc PoVs independently."
+        },
+        "adv": {
+          "pill": "4–6 strategic / Complex POCs ",
+          "note": "Able to Guide customer on success Metrics, Qualify POCs. Called in to rescue stalled PoCs for other team members. Sets the technical standard for others."
+        },
+        "pri": {
+          "pill": "2–4 flagship Complex POC",
+          "note": "Highest complexity only. Flagship PoCs become case studies and reusable templates."
+        }
+      },
+      {
+        "label": "PoV/POC document quality",
+        "sublabel": "Test plan + result",
+        "sa": {
+          "pill": null,
+          "note": "Uses standard POC template. Results captured with guidance."
+        },
+        "sr": {
+          "pill": null,
+          "note": "Uses standard POC template with defined success metrics and timelines and Qualification from customer."
+        },
+        "adv": {
+          "pill": null,
+          "note": "Uses standard POC template with defined success metrics and timelines and Qualification from customer."
+        },
+        "pri": {
+          "pill": null,
+          "note": "Sets the PoV framework standard for the org. Reviewed globally."
+        }
+      },
+      {
+        "label": "TFW completed",
+        "sublabel": "Quality + coverage",
+        "sa": {
+          "pill": "Able to Run TFW ",
+          "note": "With AE, Standard Format / Help from SA"
+        },
+        "sr": {
+          "pill": "Able to Decide if TFW is needed and Run TFW ",
+          "note": "Independently completed with AE. Work with Tech Champion before TFW delivery .Convince customer showcasing right RC proofs in TFW"
+        },
+        "adv": {
+          "pill": "Able to Decide if TFW is needed and Run TFW ",
+          "note": "Independently completed with AE. Work with Tech Champion before TFW delivery .Convince customer showcasing right RC proofs in TFW. Ability to showcase MongoDB capability via custom Demo"
+        },
+        "pri": {
+          "pill": "Defines TFW methodology",
+          "note": "Shapes TFW standards. Trains SA org on execution quality."
+        }
+      },
+      {
+        "label": "TAB created",
+        "sublabel": "Technical Account Blueprint",
+        "sa": {
+          "pill": "For Key Strategic Accounts",
+          "pillType": "na",
+          "note": "With Inputs from Manager, Other SAs"
+        },
+        "sr": {
+          "pill": "For Key Strategic Accounts",
+          "note": "Top strategic accounts. Able to traverse situations and get details independently"
+        },
+        "adv": {
+          "pill": "For Key Strategic Accounts",
+          "note": "Top strategic accounts. Able to traverse situations and get details independently, Participate in TAB framework."
+        },
+        "pri": {
+          "pill": "Authors TAB framework",
+          "note": "TAB template used org-wide. Reviews and signs off Advisory SA TABs."
+        }
+      },
+      {
+        "label": "Technical champion",
+        "sublabel": "Role level built + plan quality",
+        "sa": {
+          "pill": "Developer/Architect - At Minimum",
+          "note": "1 champion per deal. Relationship lasts the deal lifecycle."
+        },
+        "sr": {
+          "pill": "Chief Architect/ Director / VP / CTO - At Minimum",
+          "note": "1–2 champions per account. Relationship survives beyond the deal. TAB includes champion map."
+        },
+        "adv": {
+          "pill": "Chief Architect/ Director / VP / CTO / Founder / CSuite- At Minimum",
+          "note": "Multiple champions across workloads. TAB includes champion map."
+        },
+        "pri": {
+          "pill": "CTO/C-suite",
+          "note": " Champions across multiple accounts. Invited to define their data strategy."
+        }
+      }
+    ]
+  },
+  {
+    "group": "Business & sales acumen · collaboration",
+    "metrics": [
+      {
+        "label": "Account plan SA contribution",
+        "sublabel": "Depth + ownership",
+        "sa": {
+          "pill": null,
+          "note": "Contributes technical section. Inputs reviewed by manager/ SA."
+        },
+        "sr": {
+          "pill": null,
+          "note": "Co-owns plan account plan. Proactively Works with AE / RD / CSM on Gaps"
+        },
+        "adv": {
+          "pill": null,
+          "note": "Co-owns account plan. Drives multi-workload expansion strategy across Accounts and works with AE/ CSM/RD on Gaps"
+        },
+        "pri": {
+          "pill": null,
+          "note": "Shapes account planning methodology. Inputs cross-regional account strategy."
+        }
+      },
+      {
+        "label": "Deals rescued / unblocked",
+        "sublabel": "Called in by other SAs",
+        "sa": {
+          "pill": "Not applicable",
+          "pillType": "na",
+          "note": null
+        },
+        "sr": {
+          "pill": "Occasional",
+          "note": "Helps peers on technical questions in their deals informally."
+        },
+        "adv": {
+          "pill": "3–6 / year",
+          "note": "Formally called in to rescue or unblock stalled deals across the region."
+        },
+        "pri": {
+          "pill": "Cross-region resource",
+          "note": "Called across AMER/EMEA/APAC. Presence in a deal shifts its outcome."
+        }
+      }
+    ]
+  },
+  {
+    "group": "Communication · thought leadership · continuous learning",
+    "metrics": [
+      {
+        "label": "Internal enablement",
+        "sublabel": "Sessions run / year",
+        "sa": {
+          "pill": "Contributor role",
+          "pillType": "na",
+          "note": "Proactive — notes, pre-read material, session support for seniors."
+        },
+        "sr": {
+          "pill": "1–2 / year",
+          "note": "Runs team enablement on a product area or competitive topic."
+        },
+        "adv": {
+          "pill": "4–6 / year",
+          "note": "Deep-dives that move win rates. Coaches AEs and xDRs on deal strategy."
+        },
+        "pri": {
+          "pill": "Programme owner",
+          "note": "Owns cross-regional enablement. Scales impact org-wide."
+        }
+      },
+      {
+        "label": "Asset creation",
+        "sublabel": "Reusable field assets",
+        "sa": {
+          "pill": "1–2 / year",
+          "note": "Internal notes, checklists, supporting demo material."
+        },
+        "sr": {
+          "pill": "3–4 / year",
+          "note": "Demo scripts, PoV templates, competitive one-pagers adopted regionally."
+        },
+        "adv": {
+          "pill": "4–6 / year",
+          "note": "Reference architectures, playbooks, deep-dive decks adopted across region."
+        },
+        "pri": {
+          "pill": "Global catalogue",
+          "note": "White papers, global blueprints, org-wide playbooks. Externally cited."
+        }
+      },
+      {
+        "label": "Evangelism activities",
+        "sublabel": "Blogs, events, talks",
+        "sa": {
+          "pill": "Not expected",
+          "pillType": "na",
+          "note": "Optional: internal lightning talk or team blog post."
+        },
+        "sr": {
+          "pill": "1 external / year",
+          "note": "MongoDB Day talk, customer session, or published blog post."
+        },
+        "adv": {
+          "pill": "2–3 external / year",
+          "note": ".local presentation, customer summit session, external publication."
+        },
+        "pri": {
+          "pill": "4+ external / year",
+          "note": "Keynotes, premier conference talks, analyst-cited white papers."
+        }
+      },
+      {
+        "label": "AHA tickets filed",
+        "sublabel": "Product feedback quality",
+        "sa": {
+          "pill": "1–2 / year",
+          "note": "Basic feature requests based on customer asks."
+        },
+        "sr": {
+          "pill": "3–5 / year",
+          "note": "Well-evidenced tickets with business impact context attached."
+        },
+        "adv": {
+          "pill": "6–10 / year",
+          "note": "Structured feedback based on recurring field patterns. Tracked to outcome."
+        },
+        "pri": {
+          "pill": "Runs the pipeline",
+          "note": "Owns voice-of-field process. Drives roadmap prioritisation with Product."
+        }
+      },
+      {
+        "label": "Closed feature loop",
+        "sublabel": "Ticket → shipped feature",
+        "sa": {
+          "pill": "Rare / N/A",
+          "pillType": "na",
+          "note": null
+        },
+        "sr": {
+          "pill": "1 per 2 years",
+          "note": "Work with Product team to get the features for their customers"
+        },
+        "adv": {
+          "pill": "1–2 / year",
+          "note": "Structured feedback regularly converts to shipped features or roadmap items for region."
+        },
+        "pri": {
+          "pill": "Multiple / year",
+          "note": "Structured feedback regularly converts to shipped features or roadmap items for cross region and proactively works with product team for roadmaps."
+        }
+      }
+    ]
+  },
+  {
+    "group": "Mentoring & org impact",
+    "metrics": [
+      {
+        "label": "Mentoring / coaching",
+        "sublabel": "Who and how",
+        "sa": {
+          "pill": "Mentee role",
+          "pillType": "na",
+          "note": "Actively seeks feedback and mentorship from seniors."
+        },
+        "sr": {
+          "pill": "SA buddy to 1–2",
+          "note": "Onboards new joiners. Peer coaching on deals, demos, and PoV execution."
+        },
+        "adv": {
+          "pill": "Coaches AEs + SAs",
+          "note": "Formal coaching on deal strategy, PoV execution, and account planning."
+        },
+        "pri": {
+          "pill": "Mentors senior leaders",
+          "note": "Mentors Advisory SAs and SA managers. Shapes team culture org-wide."
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,21 @@
+{
+  "title": "MongoDB SA career framework",
+  "subtitle": "One framework. Two views. What each role looks like — and what it needs to prove.",
+  "tag": "",
+  "promotionGates": [
+    {
+      "label": "SA → Senior",
+      "question": "\"Are they making calls on their own?\""
+    },
+    {
+      "label": "Senior → Advisory",
+      "question": "\"Do other SAs bring them their hardest problems?\""
+    },
+    {
+      "label": "Advisory → Principal",
+      "question": "\"Would the region's capability drop if they left?\""
+    }
+  ],
+  "timingRule": "A promotion case needs to show the upper end of the current level <em>and</em> evidence of consistently operating at the next level for at least <strong>2 quarters</strong>. Doing it once isn't ready. Doing it consistently — without being asked — is.",
+  "missedInsight": "Promotion is not about doing <em>more</em> things. It is about owning things at a higher quality bar, with less direction, for a wider audience. A Senior SA who makes the team better as a side effect of their work is already Advisory."
+}
