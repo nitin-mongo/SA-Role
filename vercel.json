@@ -1,0 +1,14 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/sa_role_map.html"
+    },
+    {
+      "source": "/sa-role-map",
+      "destination": "/sa_role_map.html"
+    }
+  ]
+}
