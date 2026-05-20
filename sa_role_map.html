@@ -344,6 +344,15 @@ body.view-mode #panel{width:0;opacity:0;pointer-events:none}
 
 /* Progress indicator for export */
 #export-progress{display:none;text-align:center;padding:20px;color:var(--text2);font-size:13px}
+
+/* ── SAVE / RESET BUTTONS ── */
+.tb-btn.btn-primary{background:var(--tech-c);color:#fff;border-color:var(--tech-c)}
+.tb-btn.btn-primary:hover{opacity:.88;background:var(--tech-c)}
+.tb-btn.btn-primary:disabled{opacity:.55;cursor:not-allowed}
+.tb-btn.btn-primary.saved{background:var(--mgr-c);border-color:var(--mgr-c)}
+.tb-btn.btn-primary.has-unsaved{box-shadow:0 0 0 2px var(--tech-c),0 0 0 4px rgba(91,79,207,.2)}
+.unsaved-dot{width:6px;height:6px;border-radius:50%;background:#f59e0b;flex-shrink:0;display:none}
+.tb-btn.btn-primary.has-unsaved .unsaved-dot{display:inline-block}
 </style>
 </head>
 <body>
@@ -362,6 +371,17 @@ body.view-mode #panel{width:0;opacity:0;pointer-events:none}
     <div class="apill" style="color:var(--spec-dark);border-color:var(--spec-bd);background:var(--spec-bg)" onclick="openAdd('spec')">+ Specialist</div>
     <div class="apill" style="color:var(--ind-dark);border-color:var(--ind-bd);background:var(--ind-bg)" onclick="openAdd('ind')">+ Industry</div>
   </div>
+
+  <div class="sep"></div>
+  <button class="tb-btn" id="btn-reset" onclick="resetAll()" title="Reset all roles to defaults">
+    <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+    Reset
+  </button>
+  <button class="tb-btn btn-primary" id="btn-save" onclick="saveChanges()" title="Save changes — makes map visible to all users">
+    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    <span class="unsaved-dot"></span>
+    Save Changes
+  </button>
 
   <div class="spacer"></div>
 
@@ -524,12 +544,32 @@ function defaultPos(){
 let state,positions,editId,editTrack,ctxId,ctxTrack;
 let currentMode='edit';
 let isDark=false;
+let _hasUnsaved=false;
 
-function loadState(){
+function markUnsaved(){
+  if(_hasUnsaved)return;
+  _hasUnsaved=true;
+  const btn=document.getElementById('btn-save');
+  if(btn){btn.classList.add('has-unsaved');}
+}
+function markSaved(){
+  _hasUnsaved=false;
+  const btn=document.getElementById('btn-save');
+  if(btn){btn.classList.remove('has-unsaved');}
+}
+
+async function loadState(){
+  // URL param takes priority (share links)
   try{
     const p=new URLSearchParams(location.search).get('d');
     if(p){const d=JSON.parse(atob(p));state=d.state;positions=d.pos;return;}
   }catch(e){}
+  // Try MongoDB
+  try{
+    const res=await fetch('/api/state');
+    if(res.ok){const d=await res.json();state=d.state;positions=d.positions;return;}
+  }catch(e){}
+  // Defaults
   state=JSON.parse(JSON.stringify(DEFAULTS));
   positions=defaultPos();
 }
@@ -538,10 +578,40 @@ function persist(){
   const u=new URL(location.href);
   u.searchParams.set('d',btoa(JSON.stringify({state,pos:positions})));
   history.replaceState(null,'',u.toString());
+  markUnsaved();
+}
+
+async function saveChanges(){
+  const btn=document.getElementById('btn-save');
+  const origHTML=btn?btn.innerHTML:'';
+  if(btn){
+    btn.disabled=true;
+    btn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Saving…';
+  }
+  try{
+    const res=await fetch('/api/state',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({state,positions}),
+    });
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    markSaved();
+    if(btn){
+      btn.classList.add('saved');
+      btn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="20 6 9 17 4 12"/></svg> Saved!';
+      setTimeout(()=>{btn.innerHTML=origHTML;btn.classList.remove('saved');btn.disabled=false;},2000);
+    }
+  }catch(e){
+    console.error('Save failed',e);
+    if(btn){
+      btn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Failed';
+      setTimeout(()=>{btn.innerHTML=origHTML;btn.disabled=false;},2500);
+    }
+  }
 }
 
 function resetAll(){
-  if(!confirm('Reset to defaults?'))return;
+  if(!confirm('Reset all roles to defaults?'))return;
   state=JSON.parse(JSON.stringify(DEFAULTS));
   positions=defaultPos();
   persist();render();fitView();
@@ -1208,9 +1278,10 @@ function render(){
 }
 
 // ── BOOT ──────────────────────────────────────────────────────────────────────
-loadState();
-render();
-requestAnimationFrame(()=>fitView());
+loadState().then(()=>{
+  render();
+  requestAnimationFrame(()=>fitView());
+});
 </script>
 </body>
 </html>

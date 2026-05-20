@@ -10,5 +10,10 @@
       "source": "/sa-role-map",
       "destination": "/sa_role_map.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/state.js": {
+      "runtime": "nodejs20.x"
+    }
+  }
 }
