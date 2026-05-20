@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SA Role Progression Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  /* Light theme (default) */
+  --bg:#f5f6fa;
+  --bg2:#ffffff;
+  --bg3:#eef0f6;
+  --surface:#ffffff;
+  --border:rgba(0,0,0,0.07);
+  --border2:rgba(0,0,0,0.12);
+  --text:#1a1d2e;
+  --text2:#5a6076;
+  --text3:#9ba3be;
+  --shadow:0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
+
+  /* Track colors - richer, professional */
+  --base-c:#4b5680;    --base-bg:#eef0f8;   --base-bd:#c5cbdf;   --base-dark:#2d3458;
+  --tech-c:#5b4fcf;    --tech-bg:#eeecfc;   --tech-bd:#b8b2f0;   --tech-dark:#3d3490;
+  --mgr-c:#1a8f5c;     --mgr-bg:#e6f7f0;    --mgr-bd:#9fd6be;    --mgr-dark:#0f6040;
+  --spec-c:#c05621;    --spec-bg:#fdf0e8;   --spec-bd:#f0b894;   --spec-dark:#8a3a14;
+  --ind-c:#1a6fa8;     --ind-bg:#e6f3fc;    --ind-bd:#8ec8f0;    --ind-dark:#0f4d78;
+
+  --connector:rgba(0,0,0,0.15);
+  --dashed:rgba(0,0,0,0.22);
+}
+[data-theme="dark"]{
+  --bg:#0d1117;
+  --bg2:#161b27;
+  --bg3:#1e2435;
+  --surface:#1e2435;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.13);
+  --text:#e8eaf4;
+  --text2:#7a8099;
+  --text3:#454d66;
+  --shadow:0 2px 8px rgba(0,0,0,0.3);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.5);
+
+  --base-c:#9aa8cc;    --base-bg:#252d44;   --base-bd:#4a5680;   --base-dark:#c5cde8;
+  --tech-c:#9b8ff8;    --tech-bg:#221e40;   --tech-bd:#5b4fcf;   --tech-dark:#c4bcfc;
+  --mgr-c:#2ed89a;     --mgr-bg:#0f2b22;    --mgr-bd:#1a8f5c;    --mgr-dark:#7eecc4;
+  --spec-c:#f09060;    --spec-bg:#2e1a0e;   --spec-bd:#c05621;   --spec-dark:#f8c4a0;
+  --ind-c:#4ab4f8;     --ind-bg:#0e2030;    --ind-bd:#1a6fa8;    --ind-dark:#98d4fc;
+
+  --connector:rgba(255,255,255,0.18);
+  --dashed:rgba(255,255,255,0.28);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);transition:background .25s,color .25s}
+
+/* ── TOOLBAR ── */
+#toolbar{
+  position:fixed;top:0;left:0;right:0;height:56px;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;padding:0 16px;z-index:300;
+  box-shadow:var(--shadow);
+}
+.tb-logo{display:flex;align-items:center;gap:8px;margin-right:4px}
+.tb-logo-icon{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--tech-c),var(--ind-c));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+.tb-logo h1{font-size:14px;font-weight:600;color:var(--text);letter-spacing:-0.02em;white-space:nowrap}
+.sep{width:1px;height:22px;background:var(--border2);flex-shrink:0;margin:0 4px}
+.tb-btn{
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:500;
+  padding:6px 12px;border-radius:7px;border:1px solid var(--border2);
+  background:var(--bg3);color:var(--text);cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+  transition:all .15s;
+}
+.tb-btn:hover{background:var(--border2);border-color:var(--text3)}
+.tb-btn.active{background:var(--tech-bg);border-color:var(--tech-bd);color:var(--tech-c)}
+.tb-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.spacer{flex:1}
+.view-toggle{display:flex;border:1px solid var(--border2);border-radius:8px;overflow:hidden;gap:0}
+.view-toggle .tb-btn{border:none;border-radius:0;border-right:1px solid var(--border2)}
+.view-toggle .tb-btn:last-child{border-right:none}
+.view-toggle .tb-btn.active{background:var(--tech-bg);color:var(--tech-c)}
+
+/* ── APP ── */
+#app{position:fixed;top:56px;left:0;right:0;bottom:0;display:flex}
+
+/* ── PANEL ── */
+#panel{
+  width:260px;flex-shrink:0;background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width .3s ease,opacity .3s ease;
+}
+#panel.hidden{width:0;opacity:0;pointer-events:none}
+#panel-header{
+  padding:14px 16px 10px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.ph-title{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text2)}
+.ph-hint{font-size:10px;color:var(--text3)}
+#panel-body{flex:1;overflow-y:auto;padding-bottom:20px}
+#panel-body::-webkit-scrollbar{width:3px}
+#panel-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.psection{border-bottom:1px solid var(--border);padding:12px 14px}
+.ptrack-title{
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  display:flex;align-items:center;gap:6px;margin-bottom:8px;
+}
+.ptrack-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.prole{
+  display:flex;align-items:center;gap:5px;padding:5px 6px;border-radius:7px;
+  margin-bottom:2px;cursor:grab;border:1px solid transparent;
+  transition:background .12s,border-color .12s;
+}
+.prole:hover{background:var(--bg3)}
+.prole.drag-src{opacity:.3}
+.prole.drop-above{border-top:2px solid var(--tech-c)}
+.prole.drop-below{border-bottom:2px solid var(--tech-c)}
+.prole-handle{color:var(--text3);font-size:11px;cursor:grab;flex-shrink:0}
+.prole-seniority{
+  width:18px;height:18px;border-radius:4px;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-variant-numeric:tabular-nums;letter-spacing:0;
+}
+.prole-name{flex:1;font-size:12px;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prole-badge{font-size:10px;padding:1px 5px;border-radius:4px;color:var(--text2);background:var(--bg3);flex-shrink:0}
+.prole-actions{display:flex;gap:1px;opacity:0;transition:opacity .12s;flex-shrink:0}
+.prole:hover .prole-actions{opacity:1}
+.paction{
+  font-size:11px;padding:2px 4px;border-radius:4px;border:none;
+  background:none;color:var(--text3);cursor:pointer;transition:color .1s,background .1s;
+}
+.paction:hover{color:var(--text);background:var(--bg3)}
+.paction.del:hover{color:var(--spec-c)}
+.padd{
+  width:100%;margin-top:7px;padding:5px 8px;border-radius:7px;
+  border:1px dashed var(--border2);background:transparent;
+  font-family:'Inter',sans-serif;font-size:11px;color:var(--text3);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:color .12s,border-color .12s;
+}
+.padd:hover{color:var(--text2);border-color:var(--text3)}
+
+/* ── CANVAS ── */
+#canvas{
+  flex:1;overflow:hidden;position:relative;
+  background:var(--bg);
+  cursor:default;
+}
+/* Grid dots */
+#canvas::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,var(--border2) 1px,transparent 1px);
+  background-size:24px 24px;
+  pointer-events:none;opacity:.6;
+}
+#world{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}
+#arrows{position:absolute;top:0;left:0;overflow:visible;pointer-events:none;width:5000px;height:5000px}
+
+/* ── NODES ── */
+.node{
+  position:absolute;border-radius:100px;
+  padding:0 20px;
+  font-family:'Inter',sans-serif;font-weight:500;
+  cursor:grab;user-select:none;white-space:nowrap;
+  border:1.5px solid;
+  display:flex;align-items:center;gap:8px;
+  transition:box-shadow .2s,filter .15s,transform .15s;
+}
+.node:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg)}
+.node.dragging{cursor:grabbing;z-index:1000;box-shadow:0 16px 48px rgba(0,0,0,0.25);transform:translateY(-2px) scale(1.02)}
+
+/* Seniority levels → node height + font size */
+.node.s1{height:36px;font-size:12px}
+.node.s2{height:40px;font-size:13px}
+.node.s3{height:44px;font-size:13px;font-weight:600}
+.node.s4{height:48px;font-size:14px;font-weight:600}
+.node.s5{height:52px;font-size:14px;font-weight:700;letter-spacing:-0.01em}
+
+/* Track colours — explicit backgrounds, no var(--surface) override */
+.node.base{background:var(--base-bg);border-color:var(--base-bd);color:var(--base-dark)}
+.node.tech{background:var(--tech-bg);border-color:var(--tech-bd);color:var(--tech-dark)}
+.node.mgr {background:var(--mgr-bg); border-color:var(--mgr-bd); color:var(--mgr-dark)}
+.node.spec{background:var(--spec-bg);border-color:var(--spec-bd);color:var(--spec-dark)}
+.node.ind {background:var(--ind-bg); border-color:var(--ind-bd); color:var(--ind-dark)}
+
+
+
+
+
+
+
+
+
+
+.node .nbadge{
+  font-size:10px;font-weight:600;opacity:.6;
+  font-variant-numeric:tabular-nums;letter-spacing:.02em;
+}
+.node .nlevel{
+  font-size:9px;font-weight:700;letter-spacing:.06em;
+  padding:2px 5px;border-radius:4px;opacity:.7;flex-shrink:0;
+  border:1px solid currentColor;
+}
+.node .ndel{
+  font-size:11px;opacity:0;transition:opacity .15s;cursor:pointer;
+  background:rgba(0,0,0,0.08);border-radius:50%;width:16px;height:16px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text2);
+}
+.node:hover .ndel{opacity:0.8}
+.node .ndel:hover{opacity:1!important;background:rgba(192,86,33,0.15);color:var(--spec-dark)}
+
+/* VIEW MODE: lock dragging + hide delete */
+body.view-mode .node{cursor:default}
+body.view-mode .node:hover{transform:none}
+body.view-mode .ndel{display:none!important}
+body.view-mode #panel{width:0;opacity:0;pointer-events:none}
+
+/* Track labels on canvas */
+.track-lbl{
+  position:absolute;font-family:'Inter',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 12px;border-radius:20px;pointer-events:none;
+  border:1px solid;white-space:nowrap;
+}
+
+/* ── MODAL ── */
+#modal-bg{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);
+  z-index:9000;align-items:center;justify-content:center;backdrop-filter:blur(8px);
+}
+#modal-bg.open{display:flex}
+#modal{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
+  padding:26px;width:360px;max-width:93vw;box-shadow:var(--shadow-lg);
+}
+#modal h2{font-size:17px;font-weight:600;margin-bottom:20px;color:var(--text)}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.fld input,.fld select{
+  width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;
+  padding:9px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);
+  outline:none;transition:border-color .15s;
+}
+.fld input:focus,.fld select:focus{border-color:var(--tech-c);box-shadow:0 0 0 3px rgba(91,79,207,0.12)}
+.fld select option{background:var(--bg2)}
+.mact{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+.mact button{
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:500;
+  padding:9px 20px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--bg3);color:var(--text);cursor:pointer;transition:all .15s;
+}
+.mact button:hover{background:var(--border2)}
+.mact .msave{background:var(--tech-c);border-color:var(--tech-c);color:#fff}
+.mact .msave:hover{opacity:.88}
+
+/* ── OVERLAYS ── */
+#legend{
+  position:absolute;bottom:16px;right:16px;z-index:50;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:12px 16px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:6px;
+}
+.leg-row{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text2)}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.leg-divider{height:1px;background:var(--border);margin:3px 0}
+.leg-seniority{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text3)}
+.leg-bar{height:12px;border-radius:2px;background:var(--text3);flex-shrink:0}
+
+#zoom-ctrl{
+  position:absolute;bottom:16px;left:16px;z-index:50;
+  display:flex;align-items:center;gap:4px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:9px;padding:5px 8px;box-shadow:var(--shadow);
+}
+.zb{
+  width:26px;height:26px;border-radius:6px;border:1px solid var(--border2);
+  background:var(--bg3);color:var(--text);font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .12s;
+}
+.zb:hover{background:var(--border2)}
+#zoom-pct{font-size:11px;color:var(--text2);min-width:38px;text-align:center;font-weight:500;font-variant-numeric:tabular-nums}
+
+/* ── CONTEXT MENU ── */
+#ctx-menu{
+  display:none;position:fixed;z-index:8000;background:var(--bg2);
+  border:1px solid var(--border2);border-radius:10px;padding:5px;
+  min-width:150px;box-shadow:var(--shadow-lg);
+}
+#ctx-menu.open{display:block}
+.cm-item{padding:7px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text)}
+.cm-item:hover{background:var(--bg3)}
+.cm-item.danger{color:var(--spec-c)}
+.cm-sep{height:1px;background:var(--border);margin:4px 0}
+
+/* ── EXPORT OVERLAY ── */
+#export-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);
+  z-index:9000;align-items:center;justify-content:center;backdrop-filter:blur(8px);
+}
+#export-overlay.open{display:flex}
+#export-box{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
+  padding:28px;width:400px;max-width:93vw;box-shadow:var(--shadow-lg);
+}
+#export-box h2{font-size:17px;font-weight:600;margin-bottom:6px}
+#export-box p{font-size:13px;color:var(--text2);margin-bottom:20px}
+.export-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.export-opt{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  border:1px solid var(--border2);border-radius:10px;cursor:pointer;
+  transition:all .15s;background:var(--bg3);
+}
+.export-opt:hover{border-color:var(--tech-bd);background:var(--tech-bg)}
+.export-opt-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.export-opt-text strong{display:block;font-size:13px;font-weight:600;margin-bottom:2px}
+.export-opt-text span{font-size:11px;color:var(--text2)}
+.export-cancel{width:100%;padding:9px;border-radius:8px;border:1px solid var(--border2);background:transparent;font-family:'Inter',sans-serif;font-size:13px;color:var(--text2);cursor:pointer}
+.export-cancel:hover{background:var(--bg3)}
+
+/* ── VIEW MODE BANNER ── */
+#view-banner{
+  display:none;position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  z-index:200;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:100px;padding:6px 16px;font-size:12px;font-weight:500;
+  color:var(--text2);box-shadow:var(--shadow);white-space:nowrap;
+  display:flex;align-items:center;gap:6px;opacity:0;transition:opacity .3s;pointer-events:none;
+}
+#view-banner.show{opacity:1}
+.vb-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Add pill buttons in toolbar */
+.add-pills{display:flex;gap:4px}
+.apill{
+  font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;
+  border:1px solid;cursor:pointer;transition:opacity .15s;white-space:nowrap;
+  font-family:'Inter',sans-serif;
+}
+.apill:hover{opacity:.75}
+
+/* Progress indicator for export */
+#export-progress{display:none;text-align:center;padding:20px;color:var(--text2);font-size:13px}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <div class="tb-logo">
+    <div class="tb-logo-icon">SA</div>
+    <h1>Role Progression Map</h1>
+  </div>
+  <div class="sep"></div>
+
+  <div class="add-pills" id="add-pills">
+    <div class="apill" style="color:var(--base-dark);border-color:var(--base-bd);background:var(--base-bg)" onclick="openAdd('base')">+ Base</div>
+    <div class="apill" style="color:var(--tech-dark);border-color:var(--tech-bd);background:var(--tech-bg)" onclick="openAdd('tech')">+ Tech</div>
+    <div class="apill" style="color:var(--mgr-dark);border-color:var(--mgr-bd);background:var(--mgr-bg)" onclick="openAdd('mgr')">+ Manager</div>
+    <div class="apill" style="color:var(--spec-dark);border-color:var(--spec-bd);background:var(--spec-bg)" onclick="openAdd('spec')">+ Specialist</div>
+    <div class="apill" style="color:var(--ind-dark);border-color:var(--ind-bd);background:var(--ind-bg)" onclick="openAdd('ind')">+ Industry</div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <!-- View mode toggle -->
+  <div class="view-toggle">
+    <button class="tb-btn active" id="btn-edit" onclick="setMode('edit')" title="Edit mode — drag, add, remove roles">
+      <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Edit
+    </button>
+    <button class="tb-btn" id="btn-view" onclick="setMode('view')" title="View mode — clean read-only map for sharing">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/></svg>
+      View
+    </button>
+  </div>
+
+  <div class="sep"></div>
+  <button class="tb-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle light/dark">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+  </button>
+  <button class="tb-btn" onclick="openExport()">
+    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Export
+  </button>
+  <button class="tb-btn" onclick="copyLink()">
+    <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+    Share
+  </button>
+</div>
+
+<div id="app">
+  <div id="panel">
+    <div id="panel-header">
+      <span class="ph-title">Roles</span>
+      <span class="ph-hint">drag ⠿ to reorder / change track</span>
+    </div>
+    <div id="panel-body"></div>
+  </div>
+
+  <div id="canvas" id="canvas">
+    <div id="world">
+      <svg id="arrows" width="5000" height="5000"></svg>
+    </div>
+
+    <!-- View mode banner -->
+    <div id="view-banner">
+      <span class="vb-dot"></span>
+      View mode — read only
+    </div>
+
+    <!-- Legend -->
+    <div id="legend">
+      <div class="leg-row"><div class="leg-dot" style="background:var(--base-c)"></div>Common base</div>
+      <div class="leg-row"><div class="leg-dot" style="background:var(--tech-c)"></div>Technical path</div>
+      <div class="leg-row"><div class="leg-dot" style="background:var(--mgr-c)"></div>Manager path</div>
+      <div class="leg-row"><div class="leg-dot" style="background:var(--spec-c)"></div>Specialist SA</div>
+      <div class="leg-row"><div class="leg-dot" style="background:var(--ind-c)"></div>Industry Solutions</div>
+      <div class="leg-divider"></div>
+      <div style="font-size:9px;color:var(--text3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px">Seniority</div>
+      <div class="leg-seniority"><div class="leg-bar" style="width:16px"></div>Entry / Mid</div>
+      <div class="leg-seniority"><div class="leg-bar" style="width:22px"></div>Senior</div>
+      <div class="leg-seniority"><div class="leg-bar" style="width:28px;background:var(--text2)"></div>Principal+</div>
+      <div class="leg-seniority"><div class="leg-bar" style="width:32px;background:var(--text)"></div>Executive</div>
+    </div>
+
+    <!-- Zoom -->
+    <div id="zoom-ctrl">
+      <button class="zb" onclick="zoom(-1)" title="Zoom out">−</button>
+      <span id="zoom-pct">100%</span>
+      <button class="zb" onclick="zoom(1)" title="Zoom in">+</button>
+      <button class="zb" onclick="fitView()" title="Fit all" style="font-size:10px;font-weight:600;width:32px">fit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div id="modal">
+    <h2 id="modal-title">Add role</h2>
+    <div class="fld"><label>Role name</label><input id="inp-name" placeholder="e.g. Principal SA" onkeydown="if(event.key==='Enter')saveRole()"/></div>
+    <div class="fld"><label>Track</label>
+      <select id="inp-track">
+        <option value="base">Common base</option>
+        <option value="tech">Technical path</option>
+        <option value="mgr">Manager path</option>
+        <option value="spec">Specialist SA</option>
+        <option value="ind">Industry Solutions</option>
+      </select>
+    </div>
+    <div class="fld"><label>Level badge (optional)</label><input id="inp-badge" placeholder="e.g. L4, IC5, M2"/></div>
+    <div class="mact">
+      <button onclick="closeModal()">Cancel</button>
+      <button class="msave" onclick="saveRole()">Save role</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export overlay -->
+<div id="export-overlay" onclick="if(event.target===this)closeExport()">
+  <div id="export-box">
+    <h2>Export map</h2>
+    <p>Choose a format to share with your team or leadership.</p>
+    <div class="export-opts">
+      <div class="export-opt" onclick="exportPNG()">
+        <div class="export-opt-icon" style="background:#e8f4fe">🖼️</div>
+        <div class="export-opt-text">
+          <strong>PNG Image</strong>
+          <span>Best for email, slides, and quick sharing. High resolution.</span>
+        </div>
+      </div>
+      <div class="export-opt" onclick="exportPDF()">
+        <div class="export-opt-icon" style="background:#fef0e8">📄</div>
+        <div class="export-opt-text">
+          <strong>PDF Document</strong>
+          <span>Best for printing, formal docs, and executive decks.</span>
+        </div>
+      </div>
+      <div class="export-opt" onclick="copyLink();closeExport()">
+        <div class="export-opt-icon" style="background:#f0faf4">🔗</div>
+        <div class="export-opt-text">
+          <strong>Share link</strong>
+          <span>Encode full map state in URL — anyone with link sees your version.</span>
+        </div>
+      </div>
+    </div>
+    <div id="export-progress"></div>
+    <button class="export-cancel" onclick="closeExport()">Cancel</button>
+  </div>
+</div>
+
+<!-- Context menu -->
+<div id="ctx-menu">
+  <div class="cm-item" onclick="ctxEdit()">✎ &nbsp;Edit role</div>
+  <div class="cm-item" onclick="ctxMoveUp()">↑ &nbsp;Move earlier</div>
+  <div class="cm-item" onclick="ctxMoveDown()">↓ &nbsp;Move later</div>
+  <div class="cm-sep"></div>
+  <div class="cm-item danger" onclick="ctxDelete()">× &nbsp;Remove role</div>
+</div>
+
+<script>
+// ── DEFAULTS ──────────────────────────────────────────────────────────────────
+const DEFAULTS={
+  base:[{id:'b1',name:'SA',badge:''},{id:'b2',name:'Sr SA',badge:''},{id:'b3',name:'Adv SA',badge:''}],
+  tech:[{id:'t1',name:'Principal SA',badge:''},{id:'t2',name:'Executive SA',badge:''},{id:'t3',name:'Distinguished SA',badge:''},{id:'t4',name:'Field CTO',badge:''}],
+  mgr: [{id:'m1',name:'Manager',badge:''},{id:'m2',name:'Sr Manager',badge:''},{id:'m3',name:'Director',badge:''},{id:'m4',name:'Sr Director',badge:''},{id:'m5',name:'VP',badge:''}],
+  spec:[{id:'s1',name:'Specialist SA',badge:''},{id:'s2',name:'Sr Specialist SA',badge:''},{id:'s3',name:'Principal Specialist SA',badge:''}],
+  ind: [{id:'i1',name:'Industry SA',badge:''},{id:'i2',name:'Sr Industry SA',badge:''},{id:'i3',name:'Principal Industry SA',badge:''}],
+};
+
+function defaultPos(){
+  return{
+    b1:{x:380,y:60}, b2:{x:380,y:155}, b3:{x:380,y:250},
+    t1:{x:660,y:80},  t2:{x:760,y:170}, t3:{x:830,y:275}, t4:{x:860,y:385},
+    m1:{x:650,y:355}, m2:{x:730,y:450}, m3:{x:770,y:548}, m4:{x:770,y:642}, m5:{x:740,y:735},
+    s1:{x:380,y:390}, s2:{x:380,y:482}, s3:{x:380,y:574},
+    i1:{x:100,y:355}, i2:{x:40,y:448},  i3:{x:15,y:542},
+  };
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let state,positions,editId,editTrack,ctxId,ctxTrack;
+let currentMode='edit';
+let isDark=false;
+
+function loadState(){
+  try{
+    const p=new URLSearchParams(location.search).get('d');
+    if(p){const d=JSON.parse(atob(p));state=d.state;positions=d.pos;return;}
+  }catch(e){}
+  state=JSON.parse(JSON.stringify(DEFAULTS));
+  positions=defaultPos();
+}
+
+function persist(){
+  const u=new URL(location.href);
+  u.searchParams.set('d',btoa(JSON.stringify({state,pos:positions})));
+  history.replaceState(null,'',u.toString());
+}
+
+function resetAll(){
+  if(!confirm('Reset to defaults?'))return;
+  state=JSON.parse(JSON.stringify(DEFAULTS));
+  positions=defaultPos();
+  persist();render();fitView();
+}
+
+function copyLink(){
+  persist();
+  const u=new URL(location.href);
+  u.searchParams.set('d',btoa(JSON.stringify({state,pos:positions})));
+  navigator.clipboard.writeText(u.toString()).then(()=>{
+    const btns=document.querySelectorAll('.tb-btn');
+    btns.forEach(b=>{if(b.textContent.includes('Share')){const o=b.innerHTML;b.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';setTimeout(()=>b.innerHTML=o,2000);}});
+  }).catch(()=>prompt('Link:',u.toString()));
+}
+
+function uid(){return 'r'+Math.random().toString(36).slice(2,8)}
+
+// ── THEME ─────────────────────────────────────────────────────────────────────
+function toggleTheme(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'');
+  requestAnimationFrame(()=>requestAnimationFrame(drawArrows));
+}
+
+// ── MODE ──────────────────────────────────────────────────────────────────────
+function setMode(mode){
+  currentMode=mode;
+  const isView=mode==='view';
+  document.body.classList.toggle('view-mode',isView);
+  document.getElementById('btn-edit').classList.toggle('active',!isView);
+  document.getElementById('btn-view').classList.toggle('active',isView);
+  document.getElementById('add-pills').style.opacity=isView?'0':'1';
+  document.getElementById('add-pills').style.pointerEvents=isView?'none':'auto';
+  const banner=document.getElementById('view-banner');
+  banner.classList.toggle('show',isView);
+  // Redraw arrows (node hover might have changed)
+  requestAnimationFrame(drawArrows);
+}
+
+// ── SENIORITY LEVEL ───────────────────────────────────────────────────────────
+// Assign seniority class based on index within track + track type
+function seniorityClass(track,idx,total){
+  // base: s1-s3, branches: scale with index
+  const ratio=(total<=1)?1:idx/(total-1);
+  if(ratio<0.2)return 's1';
+  if(ratio<0.4)return 's2';
+  if(ratio<0.6)return 's3';
+  if(ratio<0.8)return 's4';
+  return 's5';
+}
+
+// ── TRACK METADATA ────────────────────────────────────────────────────────────
+const TRACK_LABELS={base:'Common base',tech:'Technical path',mgr:'Manager path',spec:'Specialist SA',ind:'Industry Solutions'};
+function trackColor(tk){
+  const s=getComputedStyle(document.documentElement);
+  const map={
+    base:{arrow:'rgba(74,86,128,0.5)'},
+    tech:{arrow:'rgba(91,79,207,0.6)'},
+    mgr: {arrow:'rgba(26,143,92,0.6)'},
+    spec:{arrow:'rgba(192,86,33,0.6)'},
+    ind: {arrow:'rgba(26,111,168,0.6)'},
+  };
+  if(isDark){
+    map.base.arrow='rgba(154,168,204,0.5)';
+    map.tech.arrow='rgba(155,143,248,0.6)';
+    map.mgr.arrow='rgba(46,216,154,0.55)';
+    map.spec.arrow='rgba(240,144,96,0.6)';
+    map.ind.arrow='rgba(74,180,248,0.6)';
+  }
+  return map[tk]||map.base;
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openAdd(track){
+  editId=null;editTrack=null;
+  document.getElementById('modal-title').textContent='Add role';
+  document.getElementById('inp-name').value='';
+  document.getElementById('inp-track').value=track||'tech';
+  document.getElementById('inp-badge').value='';
+  document.getElementById('modal-bg').classList.add('open');
+  setTimeout(()=>document.getElementById('inp-name').focus(),60);
+}
+function openEdit(id,track){
+  const r=state[track].find(x=>x.id===id);if(!r)return;
+  editId=id;editTrack=track;
+  document.getElementById('modal-title').textContent='Edit role';
+  document.getElementById('inp-name').value=r.name;
+  document.getElementById('inp-track').value=track;
+  document.getElementById('inp-badge').value=r.badge||'';
+  document.getElementById('modal-bg').classList.add('open');
+  closeCtx();
+  setTimeout(()=>document.getElementById('inp-name').focus(),60);
+}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open')}
+
+function saveRole(){
+  const name=document.getElementById('inp-name').value.trim();
+  const track=document.getElementById('inp-track').value;
+  const badge=document.getElementById('inp-badge').value.trim();
+  if(!name)return;
+  if(editId){
+    if(editTrack!==track){
+      state[editTrack]=state[editTrack].filter(r=>r.id!==editId);
+      positions[editId]=getNewPos(track);
+      state[track].push({id:editId,name,badge});
+    }else{
+      const r=state[editTrack].find(r=>r.id===editId);
+      if(r){r.name=name;r.badge=badge;}
+    }
+  }else{
+    const id=uid();positions[id]=getNewPos(track);
+    state[track].push({id,name,badge});
+  }
+  persist();closeModal();render();
+}
+
+function deleteRole(id,track){
+  state[track]=state[track].filter(r=>r.id!==id);
+  delete positions[id];persist();render();
+}
+function moveUp(id,track){const a=state[track],i=a.findIndex(r=>r.id===id);if(i>0){[a[i-1],a[i]]=[a[i],a[i-1]];persist();render();}}
+function moveDown(id,track){const a=state[track],i=a.findIndex(r=>r.id===id);if(i<a.length-1){[a[i],a[i+1]]=[a[i+1],a[i]];persist();render();}}
+
+function getNewPos(track,insertIdx){
+  const roles=state[track];
+  if(insertIdx!==undefined&&roles.length>0){
+    if(insertIdx<roles.length&&positions[roles[insertIdx].id]){const p=positions[roles[insertIdx].id];return{x:p.x,y:p.y-96};}
+    if(insertIdx>0&&positions[roles[insertIdx-1].id]){const p=positions[roles[insertIdx-1].id];return{x:p.x,y:p.y+96};}
+  }
+  if(roles.length>0){const last=roles[roles.length-1];const lp=positions[last.id];if(lp)return{x:lp.x,y:lp.y+96};}
+  const c={base:{x:380,y:60},tech:{x:820,y:60},mgr:{x:820,y:400},spec:{x:570,y:380},ind:{x:120,y:380}};
+  return c[track]||{x:400,y:300};
+}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
+function openExport(){document.getElementById('export-overlay').classList.add('open')}
+function closeExport(){document.getElementById('export-overlay').classList.remove('open');document.getElementById('export-progress').style.display='none';document.getElementById('export-progress').textContent=''}
+
+function showExportProgress(msg){
+  const p=document.getElementById('export-progress');
+  p.style.display='block';p.textContent=msg;
+}
+
+async function buildExportSnapshot(){
+  // Build a flat, untransformed clone of all nodes + an SVG of arrows
+  // so html2canvas sees everything at 1:1 with no CSS transform issues
+
+  // Compute bounding box of all nodes
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  const allIds=Object.keys(positions);
+  allIds.forEach(id=>{
+    const p=positions[id];if(!p)return;
+    const el=document.getElementById('n-'+id);
+    const w=el&&el.offsetWidth>0?el.offsetWidth:165;
+    const h=el&&el.offsetHeight>0?el.offsetHeight:44;
+    x0=Math.min(x0,p.x);y0=Math.min(y0,p.y);
+    x1=Math.max(x1,p.x+w);y1=Math.max(y1,p.y+h);
+  });
+  const PAD=48;
+  x0-=PAD;y0-=PAD;x1+=PAD;y1+=PAD;
+  const W=x1-x0,H=y1-y0;
+
+  // Create snapshot container
+  const snap=document.createElement('div');
+  snap.style.cssText=`position:fixed;top:-9999px;left:-9999px;width:${W}px;height:${H}px;`+
+    `background:${isDark?'#0d1117':'#f5f6fa'};overflow:hidden;`;
+  document.body.appendChild(snap);
+
+  // Add dot grid
+  const grid=document.createElement('div');
+  grid.style.cssText=`position:absolute;inset:0;`+
+    `background-image:radial-gradient(circle,${isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.07)'} 1px,transparent 1px);`+
+    `background-size:24px 24px;`;
+  snap.appendChild(grid);
+
+  // Draw arrows as SVG at flat positions
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width',W);svg.setAttribute('height',H);
+  svg.style.cssText='position:absolute;top:0;left:0;overflow:visible;pointer-events:none';
+
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  ['base','tech','mgr','spec','ind'].forEach(tk=>{
+    const clr=trackColor(tk);
+    const m=document.createElementNS('http://www.w3.org/2000/svg','marker');
+    m.setAttribute('id','exp-ah-'+tk);m.setAttribute('viewBox','0 0 10 10');
+    m.setAttribute('refX','8');m.setAttribute('refY','5');
+    m.setAttribute('markerWidth','5');m.setAttribute('markerHeight','5');
+    m.setAttribute('orient','auto-start-reverse');
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d','M1 1L9 5L1 9');p.setAttribute('fill','none');
+    p.setAttribute('stroke',clr.arrow);p.setAttribute('stroke-width','2');p.setAttribute('stroke-linecap','round');
+    m.appendChild(p);defs.appendChild(m);
+  });
+  svg.appendChild(defs);
+
+  function snapEdge(id){
+    const el=document.getElementById('n-'+id);
+    const p=positions[id];if(!p)return null;
+    const w=el&&el.offsetWidth>0?el.offsetWidth:165;
+    const h=el&&el.offsetHeight>0?el.offsetHeight:44;
+    const ax=p.x-x0,ay=p.y-y0;
+    return{cx:ax+w/2,cy:ay+h/2,top:ay,bot:ay+h,left:ax,right:ax+w};
+  }
+  function snapCurve(a,b){
+    const na=snapEdge(a),nb=snapEdge(b);if(!na||!nb)return null;
+    const dx=nb.cx-na.cx,dy=nb.cy-na.cy;
+    let x1s,y1s,x2s,y2s;
+    if(Math.abs(dy)>=Math.abs(dx)*0.55){
+      x1s=na.cx;y1s=dy>0?na.bot:na.top;x2s=nb.cx;y2s=dy>0?nb.top:nb.bot;
+    }else{
+      x1s=dx>0?na.right:na.left;y1s=na.cy;x2s=dx>0?nb.left:nb.right;y2s=nb.cy;
+    }
+    return`M${x1s},${y1s} C${x1s+dx*0.1},${y1s+dy*0.6} ${x2s-dx*0.1},${y2s-dy*0.5} ${x2s},${y2s}`;
+  }
+  function addSnapPath(d,tk,dashed){
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',d);p.setAttribute('fill','none');
+    p.setAttribute('stroke',trackColor(tk).arrow);
+    p.setAttribute('stroke-width','1.8');
+    if(dashed){p.setAttribute('stroke-dasharray','6 4');p.setAttribute('opacity','0.75');}
+    p.setAttribute('marker-end','url(#exp-ah-'+tk+')');
+    svg.appendChild(p);
+  }
+
+  ['base','tech','mgr','spec','ind'].forEach(tk=>{
+    state[tk].forEach((role,i)=>{
+      if(i===0)return;
+      const d=snapCurve(state[tk][i-1].id,role.id);
+      if(d)addSnapPath(d,tk,false);
+    });
+  });
+  if(state.base.length){
+    const lb=state.base[state.base.length-1];
+    ['tech','mgr','spec','ind'].forEach(tk=>{
+      if(!state[tk].length)return;
+      const d=snapCurve(lb.id,state[tk][0].id);
+      if(d)addSnapPath(d,tk,true);
+    });
+  }
+  snap.appendChild(svg);
+
+  // Clone nodes at flat positions
+  const allRoles=[
+    ...state.base.map((r,i)=>({...r,track:'base',idx:i,total:state.base.length})),
+    ...state.tech.map((r,i)=>({...r,track:'tech',idx:i,total:state.tech.length})),
+    ...state.mgr.map((r,i)=>({...r,track:'mgr', idx:i,total:state.mgr.length})),
+    ...state.spec.map((r,i)=>({...r,track:'spec',idx:i,total:state.spec.length})),
+    ...state.ind.map((r,i)=>({...r,track:'ind', idx:i,total:state.ind.length})),
+  ];
+  allRoles.forEach(role=>{
+    const src=document.getElementById('n-'+role.id);
+    if(!src||!positions[role.id])return;
+    const p=positions[role.id];
+    const clone=src.cloneNode(true);
+    const del=clone.querySelector('.ndel');if(del)del.remove();
+
+    // Bake computed styles so CSS vars resolve correctly in off-screen snapshot
+    const computed=getComputedStyle(src);
+    clone.style.background=computed.backgroundColor;
+    clone.style.borderColor=computed.borderColor;
+    clone.style.color=computed.color;
+    clone.style.borderWidth=computed.borderWidth;
+    clone.style.borderStyle='solid';
+    clone.style.boxShadow='none';
+    clone.style.left=(p.x-x0)+'px';
+    clone.style.top=(p.y-y0)+'px';
+    clone.style.cursor='default';
+    clone.style.transform='none';
+    snap.appendChild(clone);
+  });
+
+  return{snap,W,H};
+}
+
+async function exportPNG(){
+  showExportProgress('Building snapshot…');
+  try{
+    const{snap,W,H}=await buildExportSnapshot();
+    document.body.appendChild(snap);
+    await new Promise(r=>setTimeout(r,80));
+    showExportProgress('Rendering…');
+    const cnv=await html2canvas(snap,{
+      backgroundColor:isDark?'#0d1117':'#f5f6fa',
+      scale:2,useCORS:true,allowTaint:true,width:W,height:H,
+    });
+    document.body.removeChild(snap);
+    showExportProgress('Downloading…');
+    const link=document.createElement('a');
+    link.download='sa-role-progression-map.png';
+    link.href=cnv.toDataURL('image/png');
+    link.click();
+    closeExport();
+  }catch(e){showExportProgress('Export failed: '+e.message);console.error(e);}
+}
+
+async function exportPDF(){
+  showExportProgress('Building snapshot…');
+  try{
+    const{snap,W,H}=await buildExportSnapshot();
+    document.body.appendChild(snap);
+    await new Promise(r=>setTimeout(r,80));
+    showExportProgress('Rendering…');
+    const cnv=await html2canvas(snap,{
+      backgroundColor:isDark?'#0d1117':'#f5f6fa',
+      scale:2,useCORS:true,allowTaint:true,width:W,height:H,
+    });
+    document.body.removeChild(snap);
+    showExportProgress('Opening print dialog…');
+    const imgData=cnv.toDataURL('image/png');
+    const dateStr=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+    const win=window.open('','_blank');
+    win.document.write(`<!DOCTYPE html><html><head><title>SA Role Progression Map</title>
+    <style>
+      @page{margin:16mm}
+      *{margin:0;padding:0;box-sizing:border-box}
+      body{background:#fff;font-family:sans-serif}
+      .header{padding:0 0 10px;border-bottom:1px solid #e5e7eb;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+      .header h1{font-size:15px;font-weight:600;color:#1a1d2e}
+      .header span{font-size:11px;color:#888}
+      img{width:100%;height:auto;display:block;border-radius:8px}
+      .footer{margin-top:14px;padding-top:10px;border-top:1px solid #e5e7eb;font-size:10px;color:#aaa;display:flex;justify-content:space-between}
+    </style></head><body>
+    <div class="header"><h1>SA Role Progression Map</h1><span>${dateStr}</span></div>
+    <img src="${imgData}"/>
+    <div class="footer"><span>Confidential — Internal use only</span><span>Generated ${dateStr}</span></div>
+    <script>window.onload=()=>{setTimeout(()=>window.print(),200);}<\/script>
+    </body></html>`);
+    win.document.close();
+    closeExport();
+  }catch(e){showExportProgress('Export failed: '+e.message);console.error(e);}
+}
+
+// ── CONTEXT MENU ──────────────────────────────────────────────────────────────
+function openCtx(e,id,track){
+  e.preventDefault();e.stopPropagation();
+  if(currentMode==='view')return;
+  ctxId=id;ctxTrack=track;
+  const m=document.getElementById('ctx-menu');
+  m.classList.add('open');
+  m.style.left=Math.min(e.clientX,window.innerWidth-165)+'px';
+  m.style.top=Math.min(e.clientY,window.innerHeight-175)+'px';
+}
+function closeCtx(){document.getElementById('ctx-menu').classList.remove('open')}
+function ctxEdit(){openEdit(ctxId,ctxTrack)}
+function ctxDelete(){if(confirm('Remove this role?'))deleteRole(ctxId,ctxTrack);closeCtx()}
+function ctxMoveUp(){moveUp(ctxId,ctxTrack);closeCtx()}
+function ctxMoveDown(){moveDown(ctxId,ctxTrack);closeCtx()}
+document.addEventListener('click',closeCtx);
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal();closeCtx();closeExport();}
+  if(document.getElementById('modal-bg').classList.contains('open'))return;
+  if(e.key==='='||e.key==='+')zoom(1);
+  if(e.key==='-'||e.key==='_')zoom(-1);
+  if(e.key==='f'||e.key==='F')fitView();
+  if(e.key==='v'||e.key==='V')setMode(currentMode==='edit'?'view':'edit');
+});
+
+// ── VIEWPORT ──────────────────────────────────────────────────────────────────
+let vpX=0,vpY=0,vpS=1;
+function applyVP(){
+  document.getElementById('world').style.transform=`translate(${vpX}px,${vpY}px) scale(${vpS})`;
+  requestAnimationFrame(drawArrows);
+}
+function updateZoomPct(){const p=document.getElementById('zoom-pct');if(p)p.textContent=Math.round(vpS*100)+'%';}
+
+function zoom(dir,cx,cy){
+  const f=dir>0?1.18:1/1.18;
+  if(cx===undefined){cx=(window.innerWidth-260)/2+260;cy=(window.innerHeight-56)/2+56;}
+  vpX=cx-(cx-vpX)*f;vpY=cy-(cy-vpY)*f;
+  vpS=Math.min(4,Math.max(0.12,vpS*f));
+  applyVP();updateZoomPct();
+}
+
+function fitView(){
+  const ids=Object.keys(positions);if(!ids.length)return;
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  ids.forEach(id=>{
+    const p=positions[id];if(!p)return;
+    const el=document.getElementById('n-'+id);
+    const w=el&&el.offsetWidth>0?el.offsetWidth:165,h=el&&el.offsetHeight>0?el.offsetHeight:44;
+    x0=Math.min(x0,p.x);y0=Math.min(y0,p.y);
+    x1=Math.max(x1,p.x+w);y1=Math.max(y1,p.y+h);
+  });
+  const panelW=currentMode==='view'?0:260;
+  const pw=window.innerWidth-panelW-60,ph=window.innerHeight-56-60;
+  const sw=x1-x0,sh=y1-y0;
+  if(sw<=0||sh<=0)return;
+  vpS=Math.min(pw/sw,ph/sh,1.3);vpS=Math.max(0.12,Math.min(1.4,vpS));
+  vpX=(pw-sw*vpS)/2-x0*vpS+panelW+30;
+  vpY=(ph-sh*vpS)/2-y0*vpS+56+30;
+  applyVP();updateZoomPct();
+}
+
+// Pan
+const canvasEl=document.getElementById('canvas');
+let panning=false,panSX,panSY,panVX,panVY;
+canvasEl.addEventListener('mousedown',e=>{
+  if(e.target!==canvasEl&&e.target!==document.getElementById('world')&&e.target.id!=='arrows')return;
+  panning=true;panSX=e.clientX;panSY=e.clientY;panVX=vpX;panVY=vpY;canvasEl.style.cursor='grabbing';
+});
+window.addEventListener('mousemove',e=>{if(!panning)return;vpX=panVX+(e.clientX-panSX);vpY=panVY+(e.clientY-panSY);applyVP();});
+window.addEventListener('mouseup',()=>{panning=false;canvasEl.style.cursor='default';});
+canvasEl.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY<0?1:-1,e.clientX,e.clientY);},{passive:false});
+
+// ── NODE DRAG ─────────────────────────────────────────────────────────────────
+let dragId=null,dragSX,dragSY,dragPX,dragPY;
+function startNodeDrag(e,id){
+  if(currentMode==='view')return;
+  if(e.button!==0)return;
+  e.stopPropagation();e.preventDefault();
+  dragId=id;dragSX=e.clientX;dragSY=e.clientY;
+  dragPX=positions[id].x;dragPY=positions[id].y;
+  document.getElementById('n-'+id).classList.add('dragging');
+}
+window.addEventListener('mousemove',e=>{
+  if(!dragId)return;
+  const dx=(e.clientX-dragSX)/vpS,dy=(e.clientY-dragSY)/vpS;
+  positions[dragId]={x:dragPX+dx,y:dragPY+dy};
+  const el=document.getElementById('n-'+dragId);
+  if(el){el.style.left=positions[dragId].x+'px';el.style.top=positions[dragId].y+'px';}
+  requestAnimationFrame(drawArrows);
+});
+window.addEventListener('mouseup',()=>{
+  if(!dragId)return;
+  document.getElementById('n-'+dragId)?.classList.remove('dragging');
+  persist();dragId=null;
+});
+
+// ── PANEL DRAG ────────────────────────────────────────────────────────────────
+let pdragId=null,pdragTrack=null,pdragEl=null,dropTargetEl=null,dropPos=null;
+
+function panelDragStart(e,id,track){
+  pdragId=id;pdragTrack=track;pdragEl=e.currentTarget;
+  pdragEl.classList.add('drag-src');
+  e.dataTransfer.effectAllowed='move';
+}
+function panelDragOver(e,id,track){
+  e.preventDefault();e.stopPropagation();
+  clearDropHighlights();
+  const el=document.getElementById('pr-'+id);if(!el)return;
+  const rect=el.getBoundingClientRect();
+  if(e.clientY<rect.top+rect.height/2){el.classList.add('drop-above');dropPos='above';}
+  else{el.classList.add('drop-below');dropPos='below';}
+  dropTargetEl={id,track};
+}
+function panelDrop(e,targetId,targetTrack){
+  e.preventDefault();e.stopPropagation();
+  clearDropHighlights();
+  if(!pdragId||!pdragTrack)return;
+  if(pdragId===targetId)return;
+  const movedId=pdragId,srcTrack=pdragTrack,trackChanged=srcTrack!==targetTrack;
+  const srcArr=state[srcTrack];
+  const srcIdx=srcArr.findIndex(r=>r.id===movedId);if(srcIdx<0)return;
+  const [moved]=srcArr.splice(srcIdx,1);
+  const dstArr=state[targetTrack];
+  const dstIdx=dstArr.findIndex(r=>r.id===targetId);
+  const insertAt=dropPos==='above'?dstIdx:dstIdx+1;
+  dstArr.splice(insertAt,0,moved);
+  if(trackChanged){
+    dstArr.splice(insertAt,1);
+    const newPos=getNewPos(targetTrack,insertAt);
+    dstArr.splice(insertAt,0,moved);
+    positions[movedId]=newPos;
+  }
+  pdragId=null;pdragTrack=null;pdragEl=null;dropTargetEl=null;dropPos=null;
+  persist();render();requestAnimationFrame(()=>requestAnimationFrame(drawArrows));
+}
+function panelDropOnTrack(e,track){
+  e.preventDefault();e.stopPropagation();
+  clearDropHighlights();
+  if(!pdragId||!pdragTrack)return;
+  const movedId=pdragId,srcTrack=pdragTrack,trackChanged=srcTrack!==track;
+  const srcArr=state[srcTrack];
+  const srcIdx=srcArr.findIndex(r=>r.id===movedId);if(srcIdx<0)return;
+  const [moved]=srcArr.splice(srcIdx,1);
+  state[track].push(moved);
+  if(trackChanged)positions[movedId]=getNewPos(track);
+  pdragId=null;pdragTrack=null;pdragEl=null;
+  persist();render();requestAnimationFrame(()=>requestAnimationFrame(drawArrows));
+}
+function panelDragEnd(){clearDropHighlights();if(pdragEl)pdragEl.classList.remove('drag-src');pdragId=null;pdragTrack=null;pdragEl=null;}
+function clearDropHighlights(){document.querySelectorAll('.drop-above,.drop-below').forEach(el=>{el.classList.remove('drop-above','drop-below');});}
+
+// ── PANEL RENDER ──────────────────────────────────────────────────────────────
+const TRACK_COLORS_MAP={
+  base:{c:'var(--base-c)',bg:'var(--base-bg)',dark:'var(--base-dark)'},
+  tech:{c:'var(--tech-c)',bg:'var(--tech-bg)',dark:'var(--tech-dark)'},
+  mgr: {c:'var(--mgr-c)', bg:'var(--mgr-bg)', dark:'var(--mgr-dark)'},
+  spec:{c:'var(--spec-c)',bg:'var(--spec-bg)',dark:'var(--spec-dark)'},
+  ind: {c:'var(--ind-c)', bg:'var(--ind-bg)', dark:'var(--ind-dark)'},
+};
+
+function renderPanel(){
+  const body=document.getElementById('panel-body');body.innerHTML='';
+  ['base','tech','mgr','spec','ind'].forEach(tk=>{
+    const clr=TRACK_COLORS_MAP[tk];
+    const sec=document.createElement('div');sec.className='psection';
+    const title=document.createElement('div');title.className='ptrack-title';
+    title.style.color=clr.c;
+    title.innerHTML=`<span class="ptrack-dot" style="background:${clr.c}"></span>${TRACK_LABELS[tk]}`;
+    title.addEventListener('dragover',e=>e.preventDefault());
+    title.addEventListener('drop',e=>panelDropOnTrack(e,tk));
+    sec.appendChild(title);
+
+    const total=state[tk].length;
+    state[tk].forEach((role,idx)=>{
+      const sc=seniorityClass(tk,idx,total);
+      const item=document.createElement('div');
+      item.className='prole';item.id='pr-'+role.id;item.draggable=true;
+      item.addEventListener('dragstart',e=>panelDragStart(e,role.id,tk));
+      item.addEventListener('dragover',e=>panelDragOver(e,role.id,tk));
+      item.addEventListener('drop',e=>panelDrop(e,role.id,tk));
+      item.addEventListener('dragend',panelDragEnd);
+
+      // Seniority pip
+      const sn=idx+1;
+      item.innerHTML=`
+        <span class="prole-handle">⠿</span>
+        <span class="prole-seniority" style="background:${clr.bg};color:${clr.c}">${sn}</span>
+        <span class="prole-name">${role.name}</span>
+        ${role.badge?`<span class="prole-badge">${role.badge}</span>`:''}
+        <span class="prole-actions">
+          <button class="paction" onclick="event.stopPropagation();moveUp('${role.id}','${tk}')">↑</button>
+          <button class="paction" onclick="event.stopPropagation();moveDown('${role.id}','${tk}')">↓</button>
+          <button class="paction" onclick="event.stopPropagation();openEdit('${role.id}','${tk}')">✎</button>
+          <button class="paction del" onclick="event.stopPropagation();if(confirm('Remove?'))deleteRole('${role.id}','${tk}')">×</button>
+        </span>`;
+      sec.appendChild(item);
+    });
+
+    const dz=document.createElement('div');
+    dz.style.cssText='min-height:5px;border-radius:4px;transition:background .1s';
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.background='rgba(91,79,207,0.1)'});
+    dz.addEventListener('dragleave',()=>dz.style.background='');
+    dz.addEventListener('drop',e=>{dz.style.background='';panelDropOnTrack(e,tk);});
+    sec.appendChild(dz);
+
+    const addBtn=document.createElement('button');addBtn.className='padd';addBtn.innerHTML='+ Add role';addBtn.onclick=()=>openAdd(tk);
+    sec.appendChild(addBtn);
+    body.appendChild(sec);
+  });
+}
+
+// ── CANVAS NODES ──────────────────────────────────────────────────────────────
+function renderNodes(){
+  const world=document.getElementById('world');
+  [...world.querySelectorAll('.node')].forEach(n=>n.remove());
+
+  const all=[
+    ...state.base.map((r,i)=>({...r,track:'base',idx:i,total:state.base.length})),
+    ...state.tech.map((r,i)=>({...r,track:'tech',idx:i,total:state.tech.length})),
+    ...state.mgr.map((r,i)=>({...r,track:'mgr', idx:i,total:state.mgr.length})),
+    ...state.spec.map((r,i)=>({...r,track:'spec',idx:i,total:state.spec.length})),
+    ...state.ind.map((r,i)=>({...r,track:'ind', idx:i,total:state.ind.length})),
+  ];
+
+  all.forEach(role=>{
+    if(!positions[role.id])positions[role.id]=getNewPos(role.track);
+    const pos=positions[role.id];
+    const sc=seniorityClass(role.track,role.idx,role.total);
+
+    const div=document.createElement('div');
+    div.className=`node ${role.track} ${sc}`;
+    div.id='n-'+role.id;
+    div.style.left=pos.x+'px';div.style.top=pos.y+'px';
+
+    // Name only — no badge on canvas node
+    const nm=document.createElement('span');nm.textContent=role.name;div.appendChild(nm);
+
+    // Delete (hidden in view mode via CSS)
+    const del=document.createElement('span');del.className='ndel';del.textContent='×';
+    del.addEventListener('click',e=>{e.stopPropagation();if(confirm('Remove "'+role.name+'"?'))deleteRole(role.id,role.track);});
+    div.appendChild(del);
+
+    div.addEventListener('mousedown',e=>startNodeDrag(e,role.id));
+    div.addEventListener('dblclick',e=>{e.stopPropagation();if(currentMode==='edit')openEdit(role.id,role.track);});
+    div.addEventListener('contextmenu',e=>openCtx(e,role.id,role.track));
+    world.appendChild(div);
+  });
+}
+
+// ── ARROWS ────────────────────────────────────────────────────────────────────
+function nodeEdge(id){
+  const el=document.getElementById('n-'+id);
+  const pos=positions[id];if(!pos)return null;
+  const w=el&&el.offsetWidth>0?el.offsetWidth:165;
+  const h=el&&el.offsetHeight>0?el.offsetHeight:44;
+  return{cx:pos.x+w/2,cy:pos.y+h/2,top:pos.y,bot:pos.y+h,left:pos.x,right:pos.x+w,w,h};
+}
+function getEdgePts(a,b){
+  const na=nodeEdge(a),nb=nodeEdge(b);if(!na||!nb)return null;
+  const dx=nb.cx-na.cx,dy=nb.cy-na.cy;
+  let x1,y1,x2,y2;
+  if(Math.abs(dy)>=Math.abs(dx)*0.55){
+    x1=na.cx;y1=dy>0?na.bot:na.top;x2=nb.cx;y2=dy>0?nb.top:nb.bot;
+  }else{
+    x1=dx>0?na.right:na.left;y1=na.cy;x2=dx>0?nb.left:nb.right;y2=nb.cy;
+  }
+  return{x1,y1,x2,y2};
+}
+function curve(x1,y1,x2,y2){
+  const dx=x2-x1,dy=y2-y1;
+  return`M${x1},${y1} C${x1+dx*0.1},${y1+dy*0.6} ${x2-dx*0.1},${y2-dy*0.5} ${x2},${y2}`;
+}
+
+function drawArrows(){
+  const svg=document.getElementById('arrows');svg.innerHTML='';
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  ['base','tech','mgr','spec','ind'].forEach(tk=>{
+    const clr=trackColor(tk);
+    const m=document.createElementNS('http://www.w3.org/2000/svg','marker');
+    m.setAttribute('id','ah-'+tk);m.setAttribute('viewBox','0 0 10 10');
+    m.setAttribute('refX','8');m.setAttribute('refY','5');
+    m.setAttribute('markerWidth','5');m.setAttribute('markerHeight','5');
+    m.setAttribute('orient','auto-start-reverse');
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d','M1 1L9 5L1 9');p.setAttribute('fill','none');
+    p.setAttribute('stroke',clr.arrow);p.setAttribute('stroke-width','2');
+    p.setAttribute('stroke-linecap','round');
+    m.appendChild(p);defs.appendChild(m);
+  });
+  svg.appendChild(defs);
+
+  function addPath(d,tk,dashed){
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',d);p.setAttribute('fill','none');
+    p.setAttribute('stroke',trackColor(tk).arrow);
+    p.setAttribute('stroke-width','1.8');
+    if(dashed){p.setAttribute('stroke-dasharray','6 4');p.setAttribute('opacity','0.7');}
+    p.setAttribute('marker-end','url(#ah-'+tk+')');
+    svg.appendChild(p);
+  }
+
+  // Within-track chains
+  ['base','tech','mgr','spec','ind'].forEach(tk=>{
+    const roles=state[tk];
+    roles.forEach((role,i)=>{
+      if(i===0)return;
+      const pts=getEdgePts(roles[i-1].id,role.id);
+      if(pts)addPath(curve(pts.x1,pts.y1,pts.x2,pts.y2),tk,false);
+    });
+  });
+
+  // Last base → first of each branch (dashed)
+  if(state.base.length){
+    const lb=state.base[state.base.length-1];
+    if(nodeEdge(lb.id)){
+      ['tech','mgr','spec','ind'].forEach(tk=>{
+        if(!state[tk].length)return;
+        const first=state[tk][0];
+        if(!nodeEdge(first.id))return;
+        const pts=getEdgePts(lb.id,first.id);
+        if(pts)addPath(curve(pts.x1,pts.y1,pts.x2,pts.y2),tk,true);
+      });
+    }
+  }
+}
+
+// ── FULL RENDER ───────────────────────────────────────────────────────────────
+function render(){
+  renderPanel();
+  renderNodes();
+  requestAnimationFrame(()=>requestAnimationFrame(drawArrows));
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+loadState();
+render();
+requestAnimationFrame(()=>fitView());
+</script>
+</body>
+</html>
